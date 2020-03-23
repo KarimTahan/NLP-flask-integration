@@ -14,6 +14,7 @@ def get_params():
     params = {'seed': request.form['seed'], 'model': request.form['model']}
     # prediction = generate_text(params['model'], params['seed'])
     print(params)
+    # TODO: instead of params, the resulting generated_test will be in the json response
     return make_response(jsonify(params), 200)
 
 
