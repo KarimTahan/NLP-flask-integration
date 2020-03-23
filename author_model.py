@@ -52,8 +52,7 @@ def generate_text(model, start_string, char2idx, idx2char):
 
         # using a categorical distribution to predict the character returned by the model
         predictions = predictions / temperature
-        predicted_id = tf.random.categorical(
-            predictions, num_samples=1)[-1, 0].numpy()
+        predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
 
         # We pass the predicted character as the next input to the model
         # along with the previous hidden state

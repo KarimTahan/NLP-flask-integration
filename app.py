@@ -17,7 +17,7 @@ def index():
 def get_params():
     params = {'seed': request.form['seed'], 'model': request.form['model']}
     seed = params['seed']
-    text = open('training/saved_weights.hdf5', 'rb').read().decode(encoding='utf-8')
+    text = open('training/saved_weights.hdf5', 'rb').read()
     vocab = sorted(set(text))
 
     char_to_id = {value: key for key, value in enumerate(vocab)}
