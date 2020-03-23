@@ -13,7 +13,6 @@ def index():
 def get_params():
     params = {'seed': request.form['seed'], 'model': request.form['model']}
     # prediction = generate_text(params['model'], params['seed'])
-    # prediction = generate_text(model, seed)
     print(params)
     return make_response(jsonify(params), 200)
 
