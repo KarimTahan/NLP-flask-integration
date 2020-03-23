@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h2>Here's the main page!</h2>
+    <form action="{{ url_for('get_params') }}" method="post">
+        <label for="model">Model:</label>
+        <select id="model" name="model">
+            <option value="shakespeare">Shakespeare</option>
+            <option value="king">Stephen King</option>
+            <option value="tolkien">Tolkien</option>
+        </select>
+        <br/>
+        <br/>
+        <br/>
+        <label for="seed">Seed:</label>
+        <textarea id="seed" name="seed" rows="3" cols="80">Rough NLP Frontend</textarea>
+        <input type="submit">
+    </form>
+</body>
+</html>
