@@ -1,17 +1,11 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import tensorflow as tf
 
-import numpy as np
-import os
-import time
 
-
-def build_model(vocab_size, embedding_dim, rnn_units, batch_size):
+def build_model(vocab_size):
     model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(vocab_size, embedding_dim,
-                                  batch_input_shape=[batch_size, None]),
-        tf.keras.layers.GRU(rnn_units,
+        tf.keras.layers.Embedding(vocab_size, 256,
+                                  batch_input_shape=[1, None]),
+        tf.keras.layers.GRU(1024,
                             return_sequences=True,
                             stateful=True,
                             recurrent_initializer='glorot_uniform'),
@@ -20,16 +14,18 @@ def build_model(vocab_size, embedding_dim, rnn_units, batch_size):
     return model
 
 
-def train_model(model, dataset, epochs, checkpoint_callback):
-    model.fit(dataset, epochs=epochs, callbacks=checkpoint_callback)
+def load_model(vocab_size, author_ckpt_path):
+    model = build_model(vocab_size)
+    model.load_weights(tf.train.latest_checkpoint(author_ckpt_path))
+    model.build(tf.TensorShape([1, None]))
     return model
 
 
-def generate_text(model, start_string, char2idx, idx2char):
+def generate_text(model, start_string, char2idx, idx2char, num_to_generate):
     # Evaluation step (generating text using the learned model)
 
     # Number of characters to generate
-    num_generate = 1000
+    num_generate = num_to_generate
 
     # Converting our start string to numbers (vectorizing)
     input_eval = [char2idx[s] for s in start_string]
@@ -52,7 +48,8 @@ def generate_text(model, start_string, char2idx, idx2char):
 
         # using a categorical distribution to predict the character returned by the model
         predictions = predictions / temperature
-        predicted_id = tf.random.categorical(predictions, num_samples=1)[-1, 0].numpy()
+        predicted_id = tf.random.categorical(
+            predictions, num_samples=1)[-1, 0].numpy()
 
         # We pass the predicted character as the next input to the model
         # along with the previous hidden state
