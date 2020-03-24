@@ -17,7 +17,7 @@ def get_params():
     char_to_id = {}
 
     params = {'seed': request.form['seed'], 'model': request.form['model']}
-    seed = params['seed']
+    seed = params['seed'] + " "
     if params['model'] in 'shakespeare_map.csv':
         with open('shakespeare_map.csv') as file:
             reader = csv.reader(file)
