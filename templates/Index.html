@@ -7,8 +7,8 @@
 <body>
     <h2>Here's the main page!</h2>
     <form action="{{ url_for('get_params') }}" method="post">
-        <label for="model">Model:</label>
-        <select id="model" name="model">
+        <label for="author">Author:</label>
+        <select id="author" name="author">
             <option value="shakespeare">Shakespeare</option>
             <option value="king">Stephen King</option>
             <option value="tolkien">Tolkien</option>
@@ -18,6 +18,9 @@
         <br/>
         <label for="seed">Seed:</label>
         <textarea id="seed" name="seed" rows="3" cols="80">Rough NLP Frontend</textarea>
+        <label for="seed_length">Seed Length:</label>
+        <input type="number" id="seed_length" name="seed_length"/>
+        <br>
         <input type="submit">
     </form>
 </body>
