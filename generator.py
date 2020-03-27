@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 def build_model(vocab_size):
     model = tf.keras.Sequential([
         tf.keras.layers.Embedding(vocab_size, 256,
