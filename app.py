@@ -19,8 +19,10 @@ def get_params():
     params = {'seed': request.form['seed'], 'author': request.form['author'],
               'seed_length': request.form['seed_length']}
     seed = params['seed'] + " "
+    author = params['author']
     seed_length = int(params['seed_length'])
-    if params['author'] in 'shakespeare_map.csv':
+
+    if author in 'shakespeare_map.csv':
         with open('shakespeare_map.csv') as file:
             reader = csv.reader(file)
             for row in reader:
@@ -30,7 +32,7 @@ def get_params():
     new_model = load_model(len(char_to_id), 'shakespeare_checkpoint')
     print('Printing model')
     prediction = generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=seed_length)
-    return make_response(jsonify(prediction), 200)
+    return make_response(jsonify(author=author, length=seed_length, seed=seed, response=prediction), 200)
 
 
 if __name__ == '__main__':
