@@ -15,12 +15,17 @@ def index():
 def get_params():
     id_to_char = []
     char_to_id = {}
+    params = {}
 
-    params = {'seed': request.form['seed'], 'author': request.form['author'],
-              'seed_length': request.form['seed_length']}
+    if request.is_json is True:
+        params = request.get_json(force=True)
+    else:
+        params = {'seed': request.form['seed'], 'author': request.form['author'],
+                  'length': request.form['length']}
+
     seed = params['seed'] + " "
     author = params['author']
-    seed_length = int(params['seed_length'])
+    length = int(params['length'])
 
     if author in 'shakespeare_map.csv':
         with open('shakespeare_map.csv') as file:
@@ -31,8 +36,8 @@ def get_params():
 
     new_model = load_model(len(char_to_id), 'shakespeare_checkpoint')
     print('Printing model')
-    prediction = generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=seed_length)
-    return make_response(jsonify(author=author, length=seed_length, seed=seed, response=prediction), 200)
+    prediction = generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=length)
+    return make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
 
 
 if __name__ == '__main__':
