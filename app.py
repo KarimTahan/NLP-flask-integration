@@ -11,8 +11,8 @@ def index():
     return render_template('Index.html')
 
 
-@app.route('/param_input', methods=['POST'])
-def get_params():
+@app.route('/prediction', methods=['POST'])
+def predict():
     id_to_char = []
     char_to_id = {}
     params = {}
@@ -35,9 +35,10 @@ def get_params():
             char_to_id = {k: v for v, k in enumerate(id_to_char)}
 
     new_model = load_model(len(char_to_id), 'shakespeare_checkpoint')
-    print('Printing model')
+    print('Generating text...')
     prediction = generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=length)
-    return make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
+    response = make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
+    return response
 
 
 if __name__ == '__main__':
