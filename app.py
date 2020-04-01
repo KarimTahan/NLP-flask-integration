@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, make_response, jsonify
+from flask_cors import CORS
 import csv
 from generator import load_model, generate_text
 
+
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.debug = True
+CORS(app)
+
 
 
 @app.route('/')
@@ -22,7 +26,7 @@ def predict():
     else:
         params = {'seed': request.form['seed'], 'author': request.form['author'],
                   'length': request.form['length']}
-
+      
     seed = params['seed'] + " "
     author = params['author']
     length = int(params['length'])
