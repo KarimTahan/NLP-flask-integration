@@ -22,7 +22,6 @@ def predict():
     char_to_id = {}
     params = {}
     checkpoint = ''
-    i = 0
 
     # Allow for both form and json formatted POST requests
     if request.is_json is True:
@@ -34,10 +33,13 @@ def predict():
 
     seed = params['seed'] + " "
     author = params['author']
-    length = int(params['length'])
+    if params['length'] is not '':
+        length = int(params['length'])
+    else:
+        length = 0
 
     # Retrieve list of available checkpoints
-    checkpoints_dir = './checkpoints/'
+    checkpoints_dir = 'checkpoints'
     checkpoints = [os.path.join(checkpoints_dir, o) for o in os.listdir(checkpoints_dir)
                    if os.path.isdir(os.path.join(checkpoints_dir, o))]
 
@@ -48,14 +50,16 @@ def predict():
 
     # Retrieve character mapping of desired author and create reverse mapping
     if author in checkpoint:
-        with open('char_mappings/' + author + '_map.csv') as file:
+        mapping_path = os.path.join('char_mappings', author + '_map.csv')
+        with open(mapping_path) as file:
             reader = csv.reader(file)
             for row in reader:
                 id_to_char.append(row[1])
             char_to_id = {k: v for v, k in enumerate(id_to_char)}
 
     # Load checkpoint into model
-    new_model = load_model(len(char_to_id), 'checkpoints/' + author + '_checkpoint')
+    checkpoint_path = os.path.join(checkpoints_dir, author + '_checkpoint')
+    new_model = load_model(len(char_to_id), checkpoint_path)
     print('Generating text...')
 
     # Generate text and return JSON in POST response
