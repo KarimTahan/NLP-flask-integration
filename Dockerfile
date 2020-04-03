@@ -1,6 +1,7 @@
 FROM python:3.7-stretch
 
 RUN pip install Flask
+RUN pip install flask_cors
 RUN pip install tensorflow
 
 ENV FLASK_APP=app.py

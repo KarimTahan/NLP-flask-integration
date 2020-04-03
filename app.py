@@ -37,7 +37,7 @@ def predict():
     length = int(params['length'])
 
     # Retrieve list of available checkpoints
-    checkpoints_dir = 'checkpoints/'
+    checkpoints_dir = './checkpoints/'
     checkpoints = [os.path.join(checkpoints_dir, o) for o in os.listdir(checkpoints_dir)
                    if os.path.isdir(os.path.join(checkpoints_dir, o))]
 
