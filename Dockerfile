@@ -6,8 +6,8 @@ RUN pip install tensorflow
 ENV FLASK_APP=app.py
 
 COPY templates ./templates
-COPY shakespeare_map.csv .
-COPY shakespeare_checkpoint ./shakespeare_checkpoint
+COPY char_mappings/shakespeare_map.csv .
+COPY checkpoints/shakespeare_checkpoint ./shakespeare_checkpoint
 COPY generator.py .
 COPY app.py .
 
