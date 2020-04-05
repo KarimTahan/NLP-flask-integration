@@ -5,6 +5,7 @@ from flask_cors import CORS
 from generator import load_model, generate_text
 
 
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.debug = True
 CORS(app)
@@ -20,10 +21,10 @@ def predict():
     """Receive and process the POST request and provide generated text as a response"""
     id_to_char = []
     char_to_id = {}
-    params = {}
     checkpoint = ''
 
     # Allow for both form and json formatted POST requests
+    print('Received request...')
     if request.is_json is True:
         params = request.get_json(force=True)
     else:
@@ -44,11 +45,13 @@ def predict():
                    if os.path.isdir(os.path.join(checkpoints_dir, o))]
 
     # Retrieve desired checkpoint
+    print('Retrieving checkpoint...')
     for c in checkpoints:
         if author in c:
             checkpoint = c
 
     # Retrieve character mapping of desired author and create reverse mapping
+    print('Retrieving mapping...')
     if author in checkpoint:
         mapping_path = os.path.join('char_mappings', author + '_map.csv')
         with open(mapping_path) as file:
@@ -58,13 +61,15 @@ def predict():
             char_to_id = {k: v for v, k in enumerate(id_to_char)}
 
     # Load checkpoint into model
-    checkpoint_path = os.path.join(checkpoints_dir, author + '_checkpoint')
+    print('Loading model...')
+    checkpoint_path = os.path.join(checkpoints_dir, author)
     new_model = load_model(len(char_to_id), checkpoint_path)
-    print('Generating text...')
 
     # Generate text and return JSON in POST response
+    print('Generating text...')
     prediction = generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=length)
     response = make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
+    print('Generation complete.')
     return response
 
 

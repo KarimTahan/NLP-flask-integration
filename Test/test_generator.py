@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
     def test_load_model(self):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
 
-        model = load_model(len(char_to_id), '../checkpoints/shakespeare_checkpoint')
+        model = load_model(len(char_to_id), '../checkpoints/shakespeare')
 
         self.assertEqual(True, True)
 
@@ -41,7 +41,7 @@ class MyTestCase(unittest.TestCase):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
         seed = 'Start Text '
 
-        new_model = load_model(len(char_to_id), '../checkpoints/shakespeare_checkpoint')
+        new_model = load_model(len(char_to_id), '../checkpoints/shakespeare')
 
         self.assertRegex(generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=50), "Start Text .*")
 

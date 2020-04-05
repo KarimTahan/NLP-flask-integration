@@ -7,7 +7,7 @@ ENV FLASK_APP=app.py
 
 COPY templates ./templates
 COPY char_mappings/shakespeare_map.csv .
-COPY checkpoints/shakespeare_checkpoint ./shakespeare_checkpoint
+COPY checkpoints/shakespeare ./shakespeare_checkpoint
 COPY generator.py .
 COPY app.py .
 
