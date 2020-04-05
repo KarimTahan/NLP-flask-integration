@@ -22,12 +22,11 @@ class MyTestCase(unittest.TestCase):
         response = self.app.get('/', follow_redirects=True)
         self.assertEqual(200, response.status_code)
 
-    # This test should work as it works when I run the app, but for some reason it has a hard time opening
-    # the shakespeare_map.csv file.
+    # This test only works if you go to the prediction method in app.py and change all of the dirs to ../<dir>
     # Should return code 200
-    def test_get_params(self):
-        form = dict(seed="hello", author="shakespeare", seed_length="50")
-        response = self.app.post('/param_input', data=form, follow_redirects=True)
+    def test_predict(self):
+        form = {"seed": "hello", "author": "shakespeare", "length": "50"}
+        response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
 
 
