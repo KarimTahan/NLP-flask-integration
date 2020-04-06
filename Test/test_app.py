@@ -1,5 +1,5 @@
 import unittest
-from app import app
+from app import app, sanitize_seed
 
 
 # All paths have be adjusted, otherwise these tests wont work
@@ -29,6 +29,14 @@ class MyTestCase(unittest.TestCase):
         form = {"seed": "hello", "author": "shakespeare", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+
+    def test_sanitize_seed_shakespeare(self):
+        seed = sanitize_seed("shakespeare", "hello")
+        self.assertEqual(seed, "hello")
+
+    def test_sanitize_seed_poe(self):
+        seed = sanitize_seed("poe", "HELLO")
+        self.assertEqual(seed, "hello")
 
 
 if __name__ == '__main__':
