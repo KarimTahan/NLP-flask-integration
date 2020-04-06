@@ -45,7 +45,7 @@ def predict():
         length = 0
 
     # Retrieve list of available checkpoints
-    checkpoints_dir = 'checkpoints'
+    checkpoints_dir = '../checkpoints'
     checkpoints = [os.path.join(checkpoints_dir, o) for o in os.listdir(checkpoints_dir)
                    if os.path.isdir(os.path.join(checkpoints_dir, o))]
 
@@ -58,7 +58,7 @@ def predict():
     # Retrieve character mapping of desired author and create reverse mapping
     print('Retrieving mapping...')
     if author in checkpoint:
-        mapping_path = os.path.join('char_mappings', author + '_map.csv')
+        mapping_path = os.path.join('../char_mappings', author + '_map.csv')
         with open(mapping_path) as file:
             reader = csv.reader(file)
             for row in reader:
