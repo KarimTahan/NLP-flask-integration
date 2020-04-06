@@ -1,7 +1,7 @@
 import csv
 import unittest
 
-from generator import build_model, load_model, generate_text, load_alt_model
+from generator import build_model, load_model, generate_text
 
 
 class MyTestCase(unittest.TestCase):
@@ -10,15 +10,15 @@ class MyTestCase(unittest.TestCase):
     def test_build_model(self):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
 
-        model = build_model(len(char_to_id))
-        self.assertEqual(True, True)
+        model = build_model(len(char_to_id), 256)
+        self.assertNotEqual(model, None)
 
     # test the build_simpson_poe_model, should work unless an error happens
     def test_build_simpson_poe_model(self):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
 
-        model = build_model(len(char_to_id))
-        self.assertEqual(True, True)
+        model = build_model(len(char_to_id), 300)
+        self.assertNotEqual(model, None)
 
     # test the load_model method, this should work unless there is an error
     def test_load_model(self):
@@ -26,15 +26,15 @@ class MyTestCase(unittest.TestCase):
 
         model = load_model(len(char_to_id), '../checkpoints/shakespeare')
 
-        self.assertEqual(True, True)
+        self.assertNotEqual(model, None)
 
-    # This test doesn't work for me which I don't understand since it is the same as the one before this
+    # Still requires simpson's map
     def test_load_alt_model(self):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
 
-        model = load_alt_model(len(char_to_id), '../checkpoints/simpson')
+        model = load_model(len(char_to_id), '../checkpoints/simpson')
 
-        self.assertEqual(True, True)
+        self.assertNotEqual(model, None)
 
     # Tests the generate_text method, test against a Regex to make sure output is correct
     def test_generate_text(self):
