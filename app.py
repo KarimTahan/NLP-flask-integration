@@ -22,7 +22,6 @@ def predict():
     id_to_char = []
     char_to_id = {}
     checkpoint = ''
-    seed = ''
 
     # Allow for both form and json formatted POST requests
     print('Received request...')
@@ -33,12 +32,10 @@ def predict():
                   'author': request.form['author'],
                   'length': request.form['length']}
 
-    pre_seed = params['seed'] + ' '
-    seed_list = pre_seed.splitlines()
-    for line in seed_list:
-        seed += line
-
     author = params['author']
+    pre_seed = params['seed']
+    seed = sanitize_seed(author, pre_seed)
+
     if params['length'] is not '':
         length = int(params['length'])
     else:
@@ -76,6 +73,18 @@ def predict():
     response = make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
     print('Generation complete.')
     return response
+
+
+def sanitize_seed(author, pre_seed):
+    seed = ''
+    seed_list = pre_seed.splitlines()
+    for line in seed_list:
+        seed += line
+
+    if 'poe' in author:
+        seed = seed.lower()
+
+    return seed
 
 
 if __name__ == '__main__':
