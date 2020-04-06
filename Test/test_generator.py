@@ -13,13 +13,6 @@ class MyTestCase(unittest.TestCase):
         model = build_model(len(char_to_id), 256)
         self.assertNotEqual(model, None)
 
-    # test the build_simpson_poe_model, should work unless an error happens
-    def test_build_simpson_poe_model(self):
-        id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
-
-        model = build_model(len(char_to_id), 300)
-        self.assertNotEqual(model, None)
-
     # test the load_model method, this should work unless there is an error
     def test_load_model(self):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
@@ -28,15 +21,7 @@ class MyTestCase(unittest.TestCase):
 
         self.assertNotEqual(model, None)
 
-    # Still requires simpson's map
-    def test_load_alt_model(self):
-        id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
-
-        model = load_model(len(char_to_id), '../checkpoints/simpson')
-
-        self.assertNotEqual(model, None)
-
-    # Tests the generate_text method, test against a Regex to make sure output is correct
+# Tests the generate_text method, test against a Regex to make sure output is correct
     def test_generate_text(self):
         id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
         seed = 'Start Text '

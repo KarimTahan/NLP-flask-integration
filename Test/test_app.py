@@ -2,6 +2,7 @@ import unittest
 from app import app
 
 
+# All paths have be adjusted, otherwise these tests wont work
 class MyTestCase(unittest.TestCase):
     # builds the api for each test case
     def setUp(self):
