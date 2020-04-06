@@ -77,10 +77,6 @@ def predict():
     print('Generation complete.')
     return response
 
-def clean_seed(seed):
-
-    return seed
-
 
 if __name__ == '__main__':
     app.run(debug=True)
