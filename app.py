@@ -81,8 +81,7 @@ def sanitize_seed(author, pre_seed):
     for line in seed_list:
         seed += line
 
-    if 'poe' in author:
-        seed = seed.lower()
+    seed = seed.lower()
 
     return seed
 
