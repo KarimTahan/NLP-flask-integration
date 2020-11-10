@@ -1,16 +1,18 @@
-FROM python:3.7-stretch
+# To install and run this run the run.sh file as sudo
+# To install/run manually:
+# sudo docker build -t flask-app .
+# sudo docker run -p 5000:5000 -d flask-app
 
-RUN pip install Flask
-RUN pip install tensorflow
+FROM python:3.7
 
-ENV FLASK_APP=app.py
+WORKDIR /app
 
-COPY templates ./templates
-COPY char_mappings/shakespeare_map.csv .
-COPY checkpoints/shakespeare ./shakespeare_checkpoint
-COPY generator.py .
-COPY app.py .
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-EXPOSE 3000
+COPY . .
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+EXPOSE 5000
+
+ENTRYPOINT ["python"]
+CMD ["app.py"]

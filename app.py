@@ -87,4 +87,4 @@ def sanitize_seed(author, pre_seed):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
