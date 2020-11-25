@@ -33,8 +33,7 @@ def predict():
                   'length': request.form['length']}
 
     author = params['author']
-    pre_seed = params['seed']
-    seed = sanitize_seed(author, pre_seed)
+    seed = params['seed']
 
     if params['length'] is not '':
         length = int(params['length'])
@@ -55,12 +54,8 @@ def predict():
     # Retrieve character mapping of desired author and create reverse mapping
     print('Retrieving mapping...')
     if author in checkpoint:
+        #TODO change to fit new w2v model extension
         mapping_path = os.path.join('char_mappings', author + '_map.csv')
-        with open(mapping_path) as file:
-            reader = csv.reader(file)
-            for row in reader:
-                id_to_char.append(row[1])
-            char_to_id = {k: v for v, k in enumerate(id_to_char)}
 
     # Load checkpoint into model
     print('Loading model...')
@@ -69,22 +64,21 @@ def predict():
 
     # Generate text and return JSON in POST response
     print('Generating text...')
-    prediction = generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=length)
+    prediction = generate_text(new_model, seed, num_to_generate=length, mapping_path)
     response = make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
     print('Generation complete.')
     return response
 
+# Deprecated for new model
+# def sanitize_seed(author, pre_seed):
+#     seed = ''
+#     seed_list = pre_seed.splitlines()
+#     for line in seed_list:
+#         seed += line
 
-def sanitize_seed(author, pre_seed):
-    seed = ''
-    seed_list = pre_seed.splitlines()
-    for line in seed_list:
-        seed += line
+#     seed = seed.lower()
 
-    if 'poe' in author:
-        seed = seed.lower()
-
-    return seed
+#     return seed
 
 
 if __name__ == '__main__':
