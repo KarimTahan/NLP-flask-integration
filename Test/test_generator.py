@@ -30,6 +30,13 @@ class MyTestCase(unittest.TestCase):
 
         self.assertRegex(generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=50), "Start Text .*")
 
+    def test_generate_failed_text(self):
+        id_to_char, char_to_id = open_file('../char_mappings/shakespeare_map.csv')
+        seed = ''
+        new_model = load_model(len(char_to_id), '../checkpoints/shakespeare')
+
+        self.assertNotRegex(generate_text(new_model, seed, char_to_id, id_to_char, num_to_generate=0), '.+')
+
 
 # opens the shakespeare_map.csv file, every one of the tests methods in this class uses this
 def open_file(path):

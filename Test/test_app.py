@@ -30,13 +30,91 @@ class MyTestCase(unittest.TestCase):
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
 
+    def test_predict_empty_form(self):
+        try:
+            form = {}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except:
+            self.assertTrue(True)
+
+    def test_predict_not_an_author(self):
+        try:
+            form = {'seed': "hello", 'author': 'noone', 'length': '50'}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except AttributeError:
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+    def test_predict_length_is_alphabet(self):
+        try:
+            form = {'seed': "hello", 'author': 'shakespeare', 'length': 'a'}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except ValueError:
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+    def test_predict_missing_fields(self):
+        # missing author in field
+        try:
+            form = {'seed': "hello", 'length': '50'}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except KeyError:
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+        # missing seed in field
+        try:
+            form = {'author': 'noone', 'length': '50'}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except KeyError:
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+        # missing the length in the form field
+        try:
+            form = {'seed': "hello", 'author': 'noone'}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except KeyError:
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
     def test_sanitize_seed_shakespeare(self):
         seed = sanitize_seed("shakespeare", "hello")
         self.assertEqual(seed, "hello")
 
-    def test_sanitize_seed_poe(self):
+    def test_sanitize_seed_shakespeare_capital(self):
+        seed = sanitize_seed("shakespeare", "HELLO")
+        self.assertEqual(seed, "HELLO")
+
+    def test_sanitize_seed_shakespeare_mismatch(self):
+        seed = sanitize_seed("shakespeare", "hello")
+        self.assertNotEqual(seed, "HELLO")
+
+        seed = sanitize_seed("shakespeare", "HELLO")
+        self.assertNotEqual(seed, "hello")
+
+    def test_sanitize_seed_poe_uppercase(self):
         seed = sanitize_seed("poe", "HELLO")
         self.assertEqual(seed, "hello")
+
+    def test_sanitize_seed_poe_lowercase(self):
+        seed = sanitize_seed("poe", "hello")
+        self.assertEqual(seed, "hello")
+
+    def test_sanitize_seed_poe_seed_uppercase(self):
+        seed = sanitize_seed("poe", "HELLO")
+        self.assertNotEqual(seed, "HELLO")
 
 
 if __name__ == '__main__':
