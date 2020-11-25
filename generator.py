@@ -1,4 +1,5 @@
 import tensorflow as tf
+from gensim.models import Word2Vec
 
 
 def build_model(vocab_size):
@@ -21,14 +22,39 @@ def load_model(vocab_size, author_ckpt_path):
     return model
 
 
-def generate_text(model, start_string, char2idx, idx2char, num_to_generate):
-    # Evaluation step (generating text using the learned model)
+def load_w2v(path):
+    return Word2Vec.load(path)
 
+
+def word2idx(word, word_model):
+    return word_model.wv.vocab[word].index
+
+
+def idx2word(idx, word_model):
+    return word_model.wv.index2word[idx]
+
+def sample(preds, temperature=1.0):
+    if temperature <= 0:
+        return np.argmax(preds)
+    preds = np.asarray(preds).astype('float64')
+    preds = np.log(preds) / temperature
+    exp_preds = np.exp(preds)
+    preds = exp_preds / np.sum(exp_preds)
+    probas = np.random.multinomial(1, preds, 1)
+    return np.argmax(probas)
+
+
+def generate_text(model, start_string, num_to_generate, w2v_path):
+    # Evaluation step (generating text using the learned model)
+    w2v_model = load_w2v(w2v_path)
     # Number of characters to generate
     num_generate = num_to_generate
+    
+    #split start string into list
+    seed = start_string.lower().split(" ")
 
     # Converting our start string to numbers (vectorizing)
-    input_eval = [char2idx[s] for s in start_string]
+    input_eval = [word2idx(s, w2v_model) for s in seed]
     input_eval = tf.expand_dims(input_eval, 0)
 
     # Empty string to store our results
@@ -42,19 +68,8 @@ def generate_text(model, start_string, char2idx, idx2char, num_to_generate):
     # Here batch size == 1
     model.reset_states()
     for i in range(num_generate):
-        predictions = model(input_eval)
-        # remove the batch dimension
-        predictions = tf.squeeze(predictions, 0)
-
-        # using a categorical distribution to predict the character returned by the model
-        predictions = predictions / temperature
-        predicted_id = tf.random.categorical(
-            predictions, num_samples=1)[-1, 0].numpy()
-
-        # We pass the predicted character as the next input to the model
-        # along with the previous hidden state
-        input_eval = tf.expand_dims([predicted_id], 0)
-
-        text_generated.append(idx2char[predicted_id])
-
-    return start_string + ''.join(text_generated)
+        predictions = model(x=np.array(input_array))
+        
+        idx = sample(prediction[-1], temperature=0.7)
+        text_generated.append(idx)
+    return ' '.join(idx2word(idx) for idx in text_generated)
