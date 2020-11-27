@@ -47,7 +47,7 @@ def sample(preds, temperature=1.0):
     return np.argmax(probas)
 
 
-def generate_text(model, start_string, num_to_generate, w2v_path):
+def generate_text(model, start_string,  w2v_path, num_to_generate):
     # Evaluation step (generating text using the learned model)
     w2v_model = load_w2v(w2v_path)
     # Number of characters to generate
