@@ -55,7 +55,7 @@ def predict():
     print('Retrieving mapping...')
     if author in checkpoint:
         #TODO change to fit new w2v model extension
-        mapping_path = os.path.join('char_mappings', author + '_map.csv')
+        mapping_path = os.path.join('char_mappings', author + '_w2v.bin')
 
     # Load checkpoint into model
     print('Loading model...')
@@ -64,7 +64,7 @@ def predict():
 
     # Generate text and return JSON in POST response
     print('Generating text...')
-    prediction = generate_text(new_model, seed, num_to_generate=length, mapping_path)
+    prediction = generate_text(new_model, seed, mapping_path, num_to_generate=length)
     response = make_response(jsonify(author=author, length=length, seed=seed, response=prediction), 200)
     print('Generation complete.')
     return response
