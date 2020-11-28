@@ -1,5 +1,5 @@
 import unittest
-from app import app, sanitize_seed
+from app import app
 
 
 # All paths have be adjusted, otherwise these tests wont work
@@ -25,11 +25,14 @@ class MyTestCase(unittest.TestCase):
 
     # This test only works if you go to the prediction method in app.py and change all of the dirs to ../<dir>
     # Should return code 200
+    # TODO Does not work, the /predict endpoint isn't working correctly, I beleive this is the lack of a model
+    # (Shape Error)
     def test_predict(self):
-        form = {"seed": "hello", "author": "shakespeare", "length": "50"}
+        form = {"seed": "hello", "author": "simpson", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
 
+    # Tests with an empty form
     def test_predict_empty_form(self):
         try:
             form = {}
@@ -38,6 +41,7 @@ class MyTestCase(unittest.TestCase):
         except:
             self.assertTrue(True)
 
+    # Tests with an invalid author
     def test_predict_not_an_author(self):
         try:
             form = {'seed': "hello", 'author': 'noone', 'length': '50'}
@@ -48,6 +52,7 @@ class MyTestCase(unittest.TestCase):
         except:
             self.assertTrue(False)
 
+    # tests with a letter in the length column
     def test_predict_length_is_alphabet(self):
         try:
             form = {'seed': "hello", 'author': 'shakespeare', 'length': 'a'}
@@ -58,6 +63,7 @@ class MyTestCase(unittest.TestCase):
         except:
             self.assertTrue(False)
 
+    # Tests with a missing field
     def test_predict_missing_fields(self):
         # missing author in field
         try:
@@ -89,32 +95,35 @@ class MyTestCase(unittest.TestCase):
         except:
             self.assertTrue(False)
 
-    def test_sanitize_seed_shakespeare(self):
-        seed = sanitize_seed("shakespeare", "hello")
-        self.assertEqual(seed, "hello")
-
-    def test_sanitize_seed_shakespeare_capital(self):
-        seed = sanitize_seed("shakespeare", "HELLO")
-        self.assertEqual(seed, "HELLO")
-
-    def test_sanitize_seed_shakespeare_mismatch(self):
-        seed = sanitize_seed("shakespeare", "hello")
-        self.assertNotEqual(seed, "HELLO")
-
-        seed = sanitize_seed("shakespeare", "HELLO")
-        self.assertNotEqual(seed, "hello")
-
-    def test_sanitize_seed_poe_uppercase(self):
-        seed = sanitize_seed("poe", "HELLO")
-        self.assertEqual(seed, "hello")
-
-    def test_sanitize_seed_poe_lowercase(self):
-        seed = sanitize_seed("poe", "hello")
-        self.assertEqual(seed, "hello")
-
-    def test_sanitize_seed_poe_seed_uppercase(self):
-        seed = sanitize_seed("poe", "HELLO")
-        self.assertNotEqual(seed, "HELLO")
+##################################################################################
+# The tests below are for the char2vec model as sanitize_seed() is not used anymore
+##################################################################################
+#     def test_sanitize_seed_shakespeare(self):
+#         seed = sanitize_seed("shakespeare", "hello")
+#         self.assertEqual(seed, "hello")
+#
+#     def test_sanitize_seed_shakespeare_capital(self):
+#         seed = sanitize_seed("shakespeare", "HELLO")
+#         self.assertEqual(seed, "HELLO")
+#
+#     def test_sanitize_seed_shakespeare_mismatch(self):
+#         seed = sanitize_seed("shakespeare", "hello")
+#         self.assertNotEqual(seed, "HELLO")
+#
+#         seed = sanitize_seed("shakespeare", "HELLO")
+#         self.assertNotEqual(seed, "hello")
+#
+#     def test_sanitize_seed_poe_uppercase(self):
+#         seed = sanitize_seed("poe", "HELLO")
+#         self.assertEqual(seed, "hello")
+#
+#     def test_sanitize_seed_poe_lowercase(self):
+#         seed = sanitize_seed("poe", "hello")
+#         self.assertEqual(seed, "hello")
+#
+#     def test_sanitize_seed_poe_seed_uppercase(self):
+#         seed = sanitize_seed("poe", "HELLO")
+#         self.assertNotEqual(seed, "HELLO")
 
 
 if __name__ == '__main__':
