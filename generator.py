@@ -1,28 +1,28 @@
-import tensorflow as tf
+import keras
 from gensim.models import Word2Vec
 
 
-def build_model(vocab_size, shape):
-    model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(vocab_size, shape,
-                                  batch_input_shape=[1, None]),
-        tf.keras.layers.GRU(1024,
-                            return_sequences=True,
-                            stateful=True,
-                            recurrent_initializer='glorot_uniform'),
-        tf.keras.layers.Dense(vocab_size)
-    ])
-    return model
+# def build_model(vocab_size, shape):
+#     model = tf.keras.Sequential([
+#         tf.keras.layers.Embedding(vocab_size, shape,
+#                                   batch_input_shape=[1, None]),
+#         tf.keras.layers.GRU(1024,
+#                             return_sequences=True,
+#                             stateful=True,
+#                             recurrent_initializer='glorot_uniform'),
+#         tf.keras.layers.Dense(vocab_size)
+#     ])
+#     return model
 
 
-def load_model(vocab_size, author_ckpt_path):
-    if 'shakespeare' in author_ckpt_path:
-        model = build_model(vocab_size, 256)
-    elif 'poe' or 'simpson' in author_ckpt_path:
-        model = build_model(vocab_size, 300)
-    model.load_weights(tf.train.latest_checkpoint(author_ckpt_path))
-    model.build(tf.TensorShape([1, None]))
-    return model
+# def load_model(vocab_size, author_ckpt_path):
+#     if 'shakespeare' in author_ckpt_path:
+#         model = build_model(vocab_size, 256)
+#     elif 'poe' or 'simpson' in author_ckpt_path:
+#         model = build_model(vocab_size, 300)
+#     model.load_weights(tf.train.latest_checkpoint(author_ckpt_path))
+#     model.build(tf.TensorShape([1, None]))
+#     return model
 
 
 def load_w2v(path):

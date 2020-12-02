@@ -1,8 +1,9 @@
 import csv
 import os
+import keras
 from flask import Flask, render_template, request, make_response, jsonify
 from flask_cors import CORS
-from generator import load_model, generate_text
+from generator import generate_text
 
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
@@ -60,7 +61,8 @@ def predict():
     # Load checkpoint into model
     print('Loading model...')
     checkpoint_path = os.path.join(checkpoints_dir, author)
-    new_model = load_model(len(char_to_id), checkpoint_path)
+    checkpoint_path.append(f"/{author}.json")
+    new_model = keras.models.model_from_json(checkpoint_path)
 
     # Generate text and return JSON in POST response
     print('Generating text...')
