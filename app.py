@@ -69,7 +69,7 @@ def predict():
     # Load checkpoint into model
     print('Loading model...')
     model_path = os.path.join(tensor_model_dir, author)
-    model_path.append(f"/{author}.json")
+    model_path = model_path + "/" + author + ".json"
     model = keras.models.model_from_json(model_path)
     checkpoint_path = os.path.join(checkpoints_dir, author)
     new_model = load_model(model, checkpoint_path)
