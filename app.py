@@ -63,15 +63,18 @@ def predict():
     # Retrieve character mapping of desired author and create reverse mapping
     print('Retrieving mapping...')
     if author in checkpoint:
-        mapping_path = os.path.join('char_mappings', author + '_w2v.bin')
+        mapping_path = os.path.join('char_mappings', author + '_w2v.model')
     
 
     # Load checkpoint into model
     print('Loading model...')
     model_path = os.path.join(tensor_model_dir, author)
     model_path = model_path + "/" + author + ".json"
-    model = keras.models.model_from_json(model_path)
+    with open(model_path, 'r') as file:
+        config = file.read()
+    model = keras.models.model_from_json(config)
     checkpoint_path = os.path.join(checkpoints_dir, author)
+    checkpoint_path = checkpoint_path + '/' + author + '.ckpt'
     new_model = load_model(model, checkpoint_path)
 
     # Generate text and return JSON in POST response
