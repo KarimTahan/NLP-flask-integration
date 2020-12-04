@@ -1,26 +1,23 @@
 import tensorflow as tf
+import numpy as np
 from gensim.models import Word2Vec
 
 
-def build_model(vocab_size, shape):
-    model = tf.keras.Sequential([
-        tf.keras.layers.Embedding(vocab_size, shape,
-                                  batch_input_shape=[1, None]),
-        tf.keras.layers.GRU(1024,
-                            return_sequences=True,
-                            stateful=True,
-                            recurrent_initializer='glorot_uniform'),
-        tf.keras.layers.Dense(vocab_size)
-    ])
-    return model
+# def build_model(vocab_size, shape):
+#     model = tf.keras.Sequential([
+#         tf.keras.layers.Embedding(vocab_size, shape,
+#                                   batch_input_shape=[1, None]),
+#         tf.keras.layers.GRU(1024,
+#                             return_sequences=True,
+#                             stateful=True,
+#                             recurrent_initializer='glorot_uniform'),
+#         tf.keras.layers.Dense(vocab_size)
+#     ])
+#     return model
 
 
-def load_model(vocab_size, author_ckpt_path):
-    if 'shakespeare' in author_ckpt_path:
-        model = build_model(vocab_size, 256)
-    elif 'poe' or 'simpson' in author_ckpt_path:
-        model = build_model(vocab_size, 300)
-    model.load_weights(tf.train.latest_checkpoint(author_ckpt_path))
+def load_model(model, author_ckpt_path):
+    model.load_weights(author_ckpt_path)
     model.build(tf.TensorShape([1, None]))
     return model
 
@@ -54,11 +51,11 @@ def generate_text(model, start_string,  w2v_path, num_to_generate):
     num_generate = num_to_generate
     
     #split start string into list
-    seed = start_string.lower().split(" ")
-
+    seed = start_string.lower().split()
+    seed = [word for word in seed if word]
     # Converting our start string to numbers (vectorizing)
     input_eval = [word2idx(s, w2v_model) for s in seed]
-    input_eval = tf.expand_dims(input_eval, 0)
+    # input_eval = tf.expand_dims(input_eval, 0)
 
     # Empty string to store our results
     text_generated = []
@@ -71,8 +68,8 @@ def generate_text(model, start_string,  w2v_path, num_to_generate):
     # Here batch size == 1
     model.reset_states()
     for i in range(num_generate):
-        predictions = model(x=np.array(input_array))
+        prediction = model.predict(x=np.array(input_eval))
         
-        idx = sample(prediction[-1], temperature=0.7)
+        idx = sample(prediction[-1], temperature)
         text_generated.append(idx)
-    return ' '.join(idx2word(idx) for idx in text_generated)
+    return ' '.join(idx2word(idx, w2v_model) for idx in text_generated)

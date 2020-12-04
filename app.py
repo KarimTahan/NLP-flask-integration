@@ -1,8 +1,9 @@
 import csv
 import os
+import keras
 from flask import Flask, render_template, request, make_response, jsonify
 from flask_cors import CORS
-from generator import load_model, generate_text
+from generator import generate_text, load_model
 
 
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
@@ -44,7 +45,15 @@ def predict():
     checkpoints_dir = 'checkpoints'
     checkpoints = [os.path.join(checkpoints_dir, o) for o in os.listdir(checkpoints_dir)
                    if os.path.isdir(os.path.join(checkpoints_dir, o))]
+    tensor_model_dir = 'models'
+    models = [os.path.join(tensor_model_dir, o) for o in os.listdir(tensor_model_dir)
+                   if os.path.isdir(os.path.join(tensor_model_dir, o))]
 
+    print('Building Model...')
+    for c in models:
+        if author in c:
+            tensor_model = c
+          
     # Retrieve desired checkpoint
     print('Retrieving checkpoint...')
     for c in checkpoints:
@@ -54,13 +63,19 @@ def predict():
     # Retrieve character mapping of desired author and create reverse mapping
     print('Retrieving mapping...')
     if author in checkpoint:
-        #TODO change to fit new w2v model extension
-        mapping_path = os.path.join('char_mappings', author + '_w2v.bin')
+        mapping_path = os.path.join('char_mappings', author + '_w2v.model')
+    
 
     # Load checkpoint into model
     print('Loading model...')
+    model_path = os.path.join(tensor_model_dir, author)
+    model_path = model_path + "/" + author + ".json"
+    with open(model_path, 'r') as file:
+        config = file.read()
+    model = keras.models.model_from_json(config)
     checkpoint_path = os.path.join(checkpoints_dir, author)
-    new_model = load_model(len(char_to_id), checkpoint_path)
+    checkpoint_path = checkpoint_path + '/' + author + '.ckpt'
+    new_model = load_model(model, checkpoint_path)
 
     # Generate text and return JSON in POST response
     print('Generating text...')
