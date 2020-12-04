@@ -26,36 +26,48 @@ class TestModels(unittest.TestCase):
         form = {"seed": "Once upon a time", "author": "shakespeare", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+        text = json.loads(response.data).get('response')
+        print("Shakespeare:\n" + text)
 
     # this tests the doyle model
     def test_predict_doyle(self):
         form = {"seed": "Sherlock Holmes", "author": "doyle", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+        text = json.loads(response.data).get('response')
+        print("Doyle:\n" + text)
 
     # this tests the mckittrick model
     def test_predict_mckittrick(self):
         form = {"seed": "I", "author": "mckittrick", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+        text = json.loads(response.data).get('response')
+        print("Mckittrick:\n" + text)
 
     # this tests the doyle model
     def test_predict_poe(self):
         form = {"seed": "Sleep", "author": "poe", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+        text = json.loads(response.data).get('response')
+        print("Poe:\n" + text)
 
     # this tests the doyle model
     def test_predict_simpsons(self):
         form = {"seed": "Homer", "author": "simpsons", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+        text = json.loads(response.data).get('response')
+        print("Simpsons:\n" + text)
 
     # this tests the doyle model
     def test_predict_twain(self):
         form = {"seed": "Sahara", "author": "twain", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
+        text = json.loads(response.data).get('response')
+        print("Twain:\n" + text)
 
 
 if __name__ == '__main__':
