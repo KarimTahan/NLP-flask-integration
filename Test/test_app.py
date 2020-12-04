@@ -3,7 +3,7 @@ from app import app
 
 
 # All paths have be adjusted, otherwise these tests wont work
-class MyTestCase(unittest.TestCase):
+class TestApp(unittest.TestCase):
     # builds the api for each test case
     def setUp(self):
         app.config['TESTING'] = True
@@ -25,10 +25,8 @@ class MyTestCase(unittest.TestCase):
 
     # This test only works if you go to the prediction method in app.py and change all of the dirs to ../<dir>
     # Should return code 200
-    # TODO Does not work, the /predict endpoint isn't working correctly, I beleive this is the lack of a model
-    # (Shape Error)
     def test_predict(self):
-        form = {"seed": "hello", "author": "simpson", "length": "50"}
+        form = {"seed": "Once upon a time", "author": "shakespeare", "length": "50"}
         response = self.app.post('/prediction', json=form, follow_redirects=True)
         self.assertEqual(200, response.status_code)
 
@@ -38,8 +36,10 @@ class MyTestCase(unittest.TestCase):
             form = {}
             response = self.app.post('/prediction', json=form, follow_redirects=True)
             self.assertNotEqual(200, response.status_code)
-        except:
+        except KeyError:
             self.assertTrue(True)
+        except:
+            self.assertTrue(False)
 
     # Tests with an invalid author
     def test_predict_not_an_author(self):
@@ -47,7 +47,7 @@ class MyTestCase(unittest.TestCase):
             form = {'seed': "hello", 'author': 'noone', 'length': '50'}
             response = self.app.post('/prediction', json=form, follow_redirects=True)
             self.assertNotEqual(200, response.status_code)
-        except AttributeError:
+        except FileNotFoundError:
             self.assertTrue(True)
         except:
             self.assertTrue(False)
@@ -55,7 +55,7 @@ class MyTestCase(unittest.TestCase):
     # tests with a letter in the length column
     def test_predict_length_is_alphabet(self):
         try:
-            form = {'seed': "hello", 'author': 'shakespeare', 'length': 'a'}
+            form = {'seed': "Once upon a time", 'author': 'shakespeare', 'length': 'a'}
             response = self.app.post('/prediction', json=form, follow_redirects=True)
             self.assertNotEqual(200, response.status_code)
         except ValueError:
@@ -67,7 +67,7 @@ class MyTestCase(unittest.TestCase):
     def test_predict_missing_fields(self):
         # missing author in field
         try:
-            form = {'seed': "hello", 'length': '50'}
+            form = {'seed': "Once upon a time", 'length': '50'}
             response = self.app.post('/prediction', json=form, follow_redirects=True)
             self.assertNotEqual(200, response.status_code)
         except KeyError:
@@ -77,7 +77,7 @@ class MyTestCase(unittest.TestCase):
 
         # missing seed in field
         try:
-            form = {'author': 'noone', 'length': '50'}
+            form = {'author': 'shakespeare', 'length': '50'}
             response = self.app.post('/prediction', json=form, follow_redirects=True)
             self.assertNotEqual(200, response.status_code)
         except KeyError:
@@ -87,7 +87,18 @@ class MyTestCase(unittest.TestCase):
 
         # missing the length in the form field
         try:
-            form = {'seed': "hello", 'author': 'noone'}
+            form = {'seed': "Once upon a time", 'author': 'shakespeare'}
+            response = self.app.post('/prediction', json=form, follow_redirects=True)
+            self.assertNotEqual(200, response.status_code)
+        except KeyError:
+            self.assertTrue(True)
+        except:
+            self.assertTrue(False)
+
+    # tests with an invalid seed since the seeds now need words that exist in the model
+    def test_predict_invalid_seed(self):
+        try:
+            form = {'seed': "hello", 'author': 'shakespeare', 'length': '50'}
             response = self.app.post('/prediction', json=form, follow_redirects=True)
             self.assertNotEqual(200, response.status_code)
         except KeyError:
