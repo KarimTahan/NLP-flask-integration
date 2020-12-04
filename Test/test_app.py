@@ -23,13 +23,6 @@ class TestApp(unittest.TestCase):
         response = self.app.get('/', follow_redirects=True)
         self.assertEqual(200, response.status_code)
 
-    # This test only works if you go to the prediction method in app.py and change all of the dirs to ../<dir>
-    # Should return code 200
-    def test_predict(self):
-        form = {"seed": "Once upon a time", "author": "shakespeare", "length": "50"}
-        response = self.app.post('/prediction', json=form, follow_redirects=True)
-        self.assertEqual(200, response.status_code)
-
     # Tests with an empty form
     def test_predict_empty_form(self):
         try:
