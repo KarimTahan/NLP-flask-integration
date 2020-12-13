@@ -36,7 +36,7 @@ def predict():
     author = params['author']
     seed = params['seed']
 
-    if params['length'] is not '':
+    if params['length'] != '':
         length = int(params['length'])
     else:
         length = 0
